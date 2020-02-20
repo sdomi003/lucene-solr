@@ -256,7 +256,7 @@ public abstract class BaseDocValuesFormatTestCase extends BaseIndexFileFormatTes
     
     // Small vocabulary ranges will be highly compressible 
     // vocabRange random from [1, Byte.MAX_VALUE) 
-    int vocabRange = random().nextInt(Byte.MAX_VALUE - 1) + 1;
+    int vocabRange = random().nextInt(Byte.MAX_VALUE);
 
     for (int i = 0; i < numDocs; i++) {
       Document doc = new Document();
