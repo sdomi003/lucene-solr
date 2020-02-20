@@ -117,7 +117,9 @@ API Changes
 New Features
 ---------------------
 
-* LUCENE-8903: Add LatLonShape point query. (Ignacio Vera)
+* LUCENE-8903: Add LatLonShape and XYShape point query. (Ignacio Vera)
+
+* LUCENE-8707: Add LatLonShape and XYShape distance query. (Ignacio Vera)
 
 Improvements
 ---------------------
@@ -159,6 +161,10 @@ Improvements
 
 * LUCENE-9194: Simplify XYShapeXQuery API by adding a new abstract class called XYGeometry. Queries are
   executed with input objects that extend such interface. (Ignacio Vera)
+
+* LUCENE-9228: Sort dvUpdates in the term order before applying if they all update a
+  single field to the same value. This optimization can reduce the flush time by around
+  20% for the docValues update user cases. (Nhat Nguyen, Adrien Grand, Simon Willnauer)
 
 Optimizations
 ---------------------
