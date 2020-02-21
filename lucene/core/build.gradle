@@ -17,8 +17,33 @@
 
 
 apply plugin: 'java-library'
-
 dependencies {
   testImplementation project(':lucene:codecs')
   testImplementation project(':lucene:test-framework')
 }
+
+
+apply plugin: 'java'
+apply plugin: 'jacoco'
+
+
+jacoco {
+    toolVersion = "0.8.5"
+}
+
+
+jacocoTestReport {
+    reports {
+	html.enabled true
+        xml.enabled true
+        csv.enabled false
+    }
+}
+
+test.finalizedBy jacocoTestReport
+
+
+
+
+
+
