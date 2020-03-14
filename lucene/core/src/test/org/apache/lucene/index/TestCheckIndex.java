@@ -41,8 +41,8 @@ public class TestCheckIndex extends BaseTestCheckIndex {
   public void testDeletedDocs() throws IOException {
     testDeletedDocs(directory);
   }
-  
-  @Test
+ 
+  @Test (expected = IndexOutOfBoundsException.class)
   public void testDeleteNonExistent() throws IOException {
    testDeleteNonExistent(directory);
   }  
