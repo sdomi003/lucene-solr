@@ -101,7 +101,140 @@ public class BaseTestCheckIndex extends LuceneTestCase {
     assertTrue(checker.checkIndex(onlySegments).clean == true);
     checker.close();
   }
-  
+  // sam
+  public void testDeleteNonExistent(Directory dir) throws IOException {
+    IndexWriter writer  = new IndexWriter(dir, newIndexWriterConfig(new MockAnalyzer(random()))
+                                                 .setMaxBufferedDocs(2));
+    /*for(int i=0;i<19;i++) {
+      Document doc = new Document();
+      FieldType customType = new FieldType(TextField.TYPE_STORED);
+      customType.setStoreTermVectors(true);
+      customType.setStoreTermVectorPositions(true);
+      customType.setStoreTermVectorOffsets(true);
+      doc.add(newField("field", "aaa"+i, customType));
+      writer.addDocument(doc);
+    }
+    */
+    writer.forceMerge(1);
+    writer.commit();
+    writer.deleteDocuments(new Term("field","aaa5"));
+    writer.close();
+
+    ByteArrayOutputStream bos = new ByteArrayOutputStream(1024);
+    CheckIndex checker = new CheckIndex(dir);
+    checker.setInfoStream(new PrintStream(bos, false, IOUtils.UTF_8));
+    if (VERBOSE) checker.setInfoStream(System.out);
+    CheckIndex.Status indexStatus = checker.checkIndex();
+    if (indexStatus.clean == false) {
+      System.out.println("CheckIndex failed");
+      System.out.println(bos.toString(IOUtils.UTF_8));
+      fail();
+    }
+    /* 
+    final CheckIndex.Status.SegmentInfoStatus seg = indexStatus.segmentInfos.get(0);
+    assertTrue(seg.openReaderPassed);
+
+    assertNotNull(seg.diagnostics);
+    
+    assertNotNull(seg.fieldNormStatus);
+    assertNull(seg.fieldNormStatus.error);
+    assertEquals(1, seg.fieldNormStatus.totFields);
+
+    assertNotNull(seg.termIndexStatus);
+    assertNull(seg.termIndexStatus.error);
+    assertEquals(18, seg.termIndexStatus.termCount);
+    assertEquals(18, seg.termIndexStatus.totFreq);
+    assertEquals(18, seg.termIndexStatus.totPos);
+
+    assertNotNull(seg.storedFieldStatus);
+    assertNull(seg.storedFieldStatus.error);
+    assertEquals(18, seg.storedFieldStatus.docCount);
+    assertEquals(18, seg.storedFieldStatus.totFields);
+
+    assertNotNull(seg.termVectorStatus);
+    assertNull(seg.termVectorStatus.error);
+    assertEquals(18, seg.termVectorStatus.docCount);
+    assertEquals(18, seg.termVectorStatus.totVectors);
+
+    assertNotNull(seg.diagnostics.get("java.vm.version"));
+    assertNotNull(seg.diagnostics.get("java.runtime.version"));
+
+    assertTrue(seg.diagnostics.size() > 0);
+    final List<String> onlySegments = new ArrayList<>();
+    onlySegments.add("_0");
+    
+    assertTrue(checker.checkIndex(onlySegments).clean == true);
+    checker.close();
+    */
+  }
+
+  // sam
+  public void testForceMergeIllegalMaxNumSegments(Directory dir) throws IOException {
+    IndexWriter writer  = new IndexWriter(dir, newIndexWriterConfig(new MockAnalyzer(random()))
+                                                 .setMaxBufferedDocs(2)); 
+    writer.forceMerge(0);
+  }
+
+  public void closeClosedWriter(Directory dir) throws IOException {
+    IndexWriter writer  = new IndexWriter(dir, newIndexWriterConfig(new MockAnalyzer(random()))
+                                                 .setMaxBufferedDocs(2));
+    for(int i=0;i<19;i++) {
+      Document doc = new Document();
+      FieldType customType = new FieldType(TextField.TYPE_STORED);
+      customType.setStoreTermVectors(true);
+      customType.setStoreTermVectorPositions(true);
+      customType.setStoreTermVectorOffsets(true);
+      doc.add(newField("field", "aaa"+i, customType));
+      writer.addDocument(doc);
+    }
+    writer.forceMerge(1);
+    writer.commit();
+    writer.deleteDocuments(new Term("field","aaa5"));
+    writer.close();
+    writer.close();
+  }
+
+  public void testGetReader(Directory dir) throws IOException {
+    IndexWriter writer  = new IndexWriter(dir, newIndexWriterConfig(new MockAnalyzer(random()))
+                                                 .setMaxBufferedDocs(2));
+    writer.getReader();
+    for(int i=0;i<19;i++) {
+      Document doc = new Document();
+      FieldType customType = new FieldType(TextField.TYPE_STORED);
+      customType.setStoreTermVectors(true);
+      customType.setStoreTermVectorPositions(true);
+      customType.setStoreTermVectorOffsets(true);
+      doc.add(newField("field", "aaa"+i, customType));
+      writer.addDocument(doc);
+    }
+    writer.forceMerge(1);
+    writer.commit();
+    writer.deleteDocuments(new Term("field","aaa5"));
+    
+    writer.close();
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   public void testChecksumsOnly(Directory dir) throws IOException {
     LineFileDocs lf = new LineFileDocs(random());
     MockAnalyzer analyzer = new MockAnalyzer(random());
@@ -125,6 +258,9 @@ public class BaseTestCheckIndex extends LuceneTestCase {
     analyzer.close();
   }
   
+ 
+
+
   public void testChecksumsOnlyVerbose(Directory dir) throws IOException {
     LineFileDocs lf = new LineFileDocs(random());
     MockAnalyzer analyzer = new MockAnalyzer(random());

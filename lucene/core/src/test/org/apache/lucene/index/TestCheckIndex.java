@@ -43,6 +43,30 @@ public class TestCheckIndex extends BaseTestCheckIndex {
   }
   
   @Test
+  public void testDeleteNonExistent() throws IOException {
+   testDeleteNonExistent(directory);
+  }  
+  @Test (expected = IllegalArgumentException.class)
+  public void testForceMergeIllegalMaxNumSegments() throws IOException {
+    testForceMergeIllegalMaxNumSegments(directory);
+  }
+
+  @Test
+  public void closeClosedWriter() throws IOException {
+	closeClosedWriter(directory);
+  }
+ 
+  @Test
+  public void testGetReader() throws IOException {
+	testGetReader(directory);
+  }
+
+
+
+
+
+
+  @Test
   public void testChecksumsOnly() throws IOException {
     testChecksumsOnly(directory);
   }
